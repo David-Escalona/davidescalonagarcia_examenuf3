@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { bd } from '../data/bd';
 
 export default function Main() {
-  
-    return (
-      <>
-        <main>
+  const [cervezaSeleccionada, setCervezaSeleccionada] = useState(null);
+
+  const handleSeleccion = (e) => {
+    const idSeleccionado = parseInt(e.target.value);
+    const cerveza = bd.find(c => c.id === idSeleccionado);
+    setCervezaSeleccionada(cerveza);
+  };
+
+  return (
+    <>
+      <main>
         <div className="container mt-3 p-5 border shadow-lg">
           <h1 className="text-center mb-5">----- Vista usuario -----</h1>
           <div className="row">
@@ -30,9 +38,13 @@ export default function Main() {
 
               <h3 className="mt-5">Haz tu pedido</h3>
               <div className="d-flex gap-3">
-                <select name="cervezas" id="cervezas" className="form-control">
+                <select name="cervezas" id="cervezas" className="form-control" onChange={handleSeleccion}>
                   <option value="">Selecciona qué birra quieres</option>
-                  <option value="">Estrella Galicia</option>
+                  {bd.map((cerveza) => (
+                    <option key={cerveza.id} value={cerveza.id}>
+                      {cerveza.nombre}
+                    </option>
+                  ))}
                 </select>
 
                 <input type="number" defaultValue="0" className="form-control" />
@@ -42,12 +54,17 @@ export default function Main() {
             <div className="col-6 border">
               <div className="p-3 d-flex">
                 <div className="w-50">
-                  <img src="estrella.jpg" alt="" className="w-100" />
+                  <img
+                    src={cervezaSeleccionada ? cervezaSeleccionada.imagen : ""}
+                    className="w-50"
+                  />
                 </div>
                 <div>
-                  <h4 className="">Estrella Galicia</h4>
+                  <h4>{cervezaSeleccionada ? cervezaSeleccionada.nombre : ""}</h4>
                   <p>
-                    Cerveza suave y equilibrada con un sabor ligeramente amargo y aroma a malta.
+                    {cervezaSeleccionada
+                      ? cervezaSeleccionada.descripcion
+                      : ""}
                   </p>
                 </div>
               </div>
@@ -110,6 +127,6 @@ export default function Main() {
           </div>
         </div>
       </main>
-      </>
-    );
-  }
+    </>
+  );
+}
