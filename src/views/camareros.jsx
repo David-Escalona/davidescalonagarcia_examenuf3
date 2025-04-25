@@ -6,7 +6,7 @@ export default function Camareros() {
 
   return (
     <>
-     <footer>
+     <footer class="d-flex justify-content-center">
      <div id="tablaPedidos" className="container mt-5 mb-5 p-5 border shadow-lg">
           <div className="row">
             <h1 className="text-center mb-5">----- Vista camareros -----</h1>

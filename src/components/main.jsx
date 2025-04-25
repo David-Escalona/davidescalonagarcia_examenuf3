@@ -4,11 +4,28 @@ import { bd } from '../data/bd';
 
 export default function Main() {
   const [cervezaSeleccionada, setCervezaSeleccionada] = useState(null);
+  const [nombreGrupo, setNombreGrupo] = useState("");
+  const [numeroMesa, setNumeroMesa] = useState("");
+  const [cantidad, setCantidad] = useState(0);
+  const [pedidos, setPedidos] = useState([]);
 
   const handleSeleccion = (e) => {
     const idSeleccionado = parseInt(e.target.value);
     const cerveza = bd.find(c => c.id === idSeleccionado);
     setCervezaSeleccionada(cerveza);
+  };
+
+  const handleEnviarPedido = () => {
+    const nuevoPedido = {
+      id: pedidos.length + 3,
+      grupo: nombreGrupo,
+      mesa: numeroMesa,
+      cerveza: cervezaSeleccionada?.nombre || "",
+      cantidad: cantidad,
+      estado: "pendiente"
+    };
+
+    setPedidos([...pedidos, nuevoPedido]);
   };
 
   return (
@@ -26,14 +43,18 @@ export default function Main() {
                 type="text"
                 className="form-control mt-2"
                 placeholder="Borrachos de DAW2"
+                value={nombreGrupo}
+                onChange={(e) => setNombreGrupo(e.target.value)}
               />
               <label htmlFor="numeroMesa" className="label-control">
-                Mesa numero
+                Mesa número
               </label>
               <input
                 type="number"
                 className="form-control mt-2"
                 placeholder="0"
+                value={numeroMesa}
+                onChange={(e) => setNumeroMesa(e.target.value)}
               />
 
               <h3 className="mt-5">Haz tu pedido</h3>
@@ -47,9 +68,16 @@ export default function Main() {
                   ))}
                 </select>
 
-                <input type="number" defaultValue="0" className="form-control" />
+                <input
+                  type="number"
+                  className="form-control"
+                  value={cantidad}
+                  onChange={(e) => setCantidad(e.target.value)}
+                />
               </div>
-              <button className="btn btn-success mt-4 w-100">¡Enviar pedido!</button>
+              <button className="btn btn-success mt-4 w-100" onClick={handleEnviarPedido}>
+                ¡Enviar pedido!
+              </button>
             </div>
             <div className="col-6 border">
               <div className="p-3 d-flex">
@@ -122,6 +150,26 @@ export default function Main() {
                     </div>
                   </td>
                 </tr>
+
+                {pedidos.map((p) => (
+                  <tr key={p.id}>
+                    <td>{p.id}</td>
+                    <td>{p.grupo}</td>
+                    <td>{p.mesa}</td>
+                    <td>{p.cerveza}</td>
+                    <td>{p.cantidad}</td>
+                    <td>
+                      <div className="d-flex gap-2">
+                        <button className="btn btn-outline-warning w-100 btn-sm">
+                          Pedido pendiente...
+                        </button>
+                        <button className="btn btn-outline-danger w-100 btn-sm">
+                          🗑 Borrar pedido
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
