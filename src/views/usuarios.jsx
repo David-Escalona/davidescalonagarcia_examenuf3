@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { bd } from '../data/bd';
 
-export default function Usuarios() {
+export default function Main() {
   const [cervezaSeleccionada, setCervezaSeleccionada] = useState(null);
+  const [nombreGrupo, setNombreGrupo] = useState("");
+  const [numeroMesa, setNumeroMesa] = useState("");
+  const [cantidad, setCantidad] = useState(0);
+  const [pedidos, setPedidos] = useState([]);
 
   const handleSeleccion = (e) => {
     const idSeleccionado = parseInt(e.target.value);
@@ -11,9 +15,22 @@ export default function Usuarios() {
     setCervezaSeleccionada(cerveza);
   };
 
+  const handleEnviarPedido = () => {
+    const nuevoPedido = {
+      id: pedidos.length + 3,
+      grupo: nombreGrupo,
+      mesa: numeroMesa,
+      cerveza: cervezaSeleccionada?.nombre || "",
+      cantidad: cantidad,
+      estado: "pendiente"
+    };
+
+    setPedidos([...pedidos, nuevoPedido]);
+  };
+
   return (
     <>
-      <main class="d-flex justify-content-center">
+      <main>
         <div className="container mt-3 p-5 border shadow-lg">
           <h1 className="text-center mb-5">----- Vista usuario -----</h1>
           <div className="row">
@@ -26,14 +43,18 @@ export default function Usuarios() {
                 type="text"
                 className="form-control mt-2"
                 placeholder="Borrachos de DAW2"
+                value={nombreGrupo}
+                onChange={(e) => setNombreGrupo(e.target.value)}
               />
               <label htmlFor="numeroMesa" className="label-control">
-                Mesa numero
+                Mesa número
               </label>
               <input
                 type="number"
                 className="form-control mt-2"
                 placeholder="0"
+                value={numeroMesa}
+                onChange={(e) => setNumeroMesa(e.target.value)}
               />
 
               <h3 className="mt-5">Haz tu pedido</h3>
@@ -47,9 +68,16 @@ export default function Usuarios() {
                   ))}
                 </select>
 
-                <input type="number" defaultValue="0" className="form-control" />
+                <input
+                  type="number"
+                  className="form-control"
+                  value={cantidad}
+                  onChange={(e) => setCantidad(e.target.value)}
+                />
               </div>
-              <button className="btn btn-success mt-4 w-100">¡Enviar pedido!</button>
+              <button className="btn btn-success mt-4 w-100" onClick={handleEnviarPedido}>
+                ¡Enviar pedido!
+              </button>
             </div>
             <div className="col-6 border">
               <div className="p-3 d-flex">
@@ -71,7 +99,7 @@ export default function Usuarios() {
             </div>
           </div>
         </div>
-        </main>
-        </>
+      </main>
+    </>
   );
 }
